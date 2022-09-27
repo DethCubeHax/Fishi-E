@@ -6,7 +6,7 @@ extern int servoPin1, servoPin2;
 extern int servoOneCalibration, servoTwoCalibration;
 
 extern float s1, s2;
-extern float maxAttackAngle = 50;
+extern float maxAttackAngle;
 
 class Fins
 {

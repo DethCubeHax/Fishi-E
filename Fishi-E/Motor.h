@@ -10,6 +10,8 @@ extern const int encRes, gearRatio, countsPerTick;
 extern float encPos, diff;
 extern long int countsPerRevolution;
 extern int speedVal, pitchVal, rollVal, yawVal;
+extern float motorPWM;
+extern bool setHome;
 
 class Motor
 {
@@ -25,8 +27,8 @@ class Motor
     
     void driveMotor()
     {
-        encPos = motor.encoderPosition();
-        int throttle = motor.yaw_turn(motorPWM, yawVal, speedVal);
+        encPos = encoderPosition();
+        int throttle = yaw_turn(motorPWM, yawVal, speedVal);
         throttle = map(throttle, 0, 255, THROTTLE_MIN, THROTTLE_MAX);
         pusherESC.writeMicroseconds(throttle);
     }

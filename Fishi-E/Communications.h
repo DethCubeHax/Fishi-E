@@ -2,6 +2,7 @@ extern int yawVal, pitchVal, rollVal, speedVal;
 extern float motorPWM;
 extern long int killTimer;
 extern bool setHome;
+extern int incomingByte[5];
 
 class Communications
 {
