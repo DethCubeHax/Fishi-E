@@ -105,11 +105,12 @@ class Motor
         // takes the current count and updates it to an angle from 0 degrees - 360 degress
         long qdecCount = qdec.encRead();
         long x = qdecCount - floor(static_cast<float>(qdecCount) / static_cast<float>(countsPerRevolution)) * countsPerRevolution;   // new_fin%count_per_revolution 
-  
+        Serial.println(qdecCount);
         if (x == 0)
         {
             return qdecCount*1.0/countsPerRevolution*360;
         }
         return x*1.0/countsPerRevolution*360;
+        
     }
 };
