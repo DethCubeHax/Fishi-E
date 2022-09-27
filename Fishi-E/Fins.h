@@ -7,6 +7,7 @@ extern int servoOneCalibration, servoTwoCalibration;
 
 extern float s1, s2;
 extern float maxAttackAngle;
+extern int rollVal, pitchVal;
 
 class Fins
 {
@@ -21,7 +22,7 @@ class Fins
         servo2.write(90);        
     }
     
-    void finControl(int rollVal, int pitchVal)
+    void finControl()
     {
 //        s1 = (((43-rollVal)*maxAttackAngle/40 +(42-pitchVal)*maxAttackAngle/40) + 90.0);
 //        s2 = (((43-rollVal)*maxAttackAngle/40 -(42-pitchVal)*maxAttackAngle/40) + 90.0);

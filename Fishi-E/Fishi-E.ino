@@ -100,7 +100,9 @@ void setup()
 
 void loop()
 {
-    
+    comms.getData();
+    fins.finControl();
+    motor.driveMotor();
 }
 
 ////////////////////////////////////
