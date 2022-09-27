@@ -1,7 +1,7 @@
 extern int yawVal, pitchVal, rollVal, speedVal;
 extern float motorPWM;
 extern long int killTimer;
-extern bool setHome;
+extern bool setHome, yawOnFastStroke;
 extern int incomingByte[5];
 
 class Communications
@@ -35,10 +35,17 @@ class Communications
                 {
                     speedVal = incomingByte[0] - '0';
                     pitchVal = incomingByte[1];
-                    yawVal = incomingByte[2] - '0';
+                    int t = incomingByte[2] - '0';
+                    if (t != yawVal)
+                    {
+                        yawVal = t;
+                        yawOnFastStroke = true;
+                    }
+                    
                     rollVal = incomingByte[3];
                     
                     killTimer = millis();
+                    standardizeData();
                 }
             }
         }
@@ -55,5 +62,15 @@ class Communications
             motorPWM = 0;
             pusherESC.write(1500);
         }
+    }
+
+    void standardizeData()
+    {
+        pitchVal = constrain(pitchVal, 10, 90);
+        speedVal = constrain(speedVal, 0, 9);
+        yawVal = constrain(yawVal, 1, 9);
+        rollVal = constrain(rollVal, 10, 90);
+        
+        yawVal -= 5;
     }
 };

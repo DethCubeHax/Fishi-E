@@ -11,7 +11,7 @@ extern float encPos, diff;
 extern long int countsPerRevolution;
 extern int speedVal, pitchVal, rollVal, yawVal;
 extern float motorPWM;
-extern bool setHome;
+extern bool setHome, yawOnFastStroke;
 
 class Motor
 {
@@ -28,7 +28,24 @@ class Motor
     void driveMotor()
     {
         encPos = encoderPosition();
-        int throttle = yaw_turn(motorPWM, yawVal, speedVal);
+        int throttle = 0;
+        
+        if (yawOnFastStroke == true)
+        {
+          if ((yawVal > 0) && (encPos > 44.0) && (encPos < 226.0))
+          {
+            yawOnFastStroke = false;
+          }
+          if ((yawVal < 0) && (( encPos > 225.0 && encPos < 361.0) || (encPos >= 0.0 && encPos < 45.0)))
+          {
+            yawOnFastStroke = false;
+          }
+          throttle = yaw_turn(motorPWM, 0, speedVal);
+        }
+        else
+        {
+          throttle = yaw_turn(motorPWM, yawVal, speedVal);
+        }
         throttle = map(throttle, 0, 255, THROTTLE_MIN, THROTTLE_MAX);
         pusherESC.writeMicroseconds(throttle);
     }
@@ -37,8 +54,6 @@ class Motor
     private:
     int yaw_turn(int pwm, int turn, int speedVal)
     {
-        //Map the turn value to +/- 4, which is easier to understand
-        turn -= 5;
         //Accepts a pwm signal and outputs a pwm signal from 0-255
         if(turn == 0)
         {

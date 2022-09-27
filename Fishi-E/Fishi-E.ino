@@ -32,6 +32,7 @@ int incomingByte[5] = {0};
 float motorPWM = 0;
 long int killTimer;
 bool setHome = false;
+bool yawOnFastStroke = false;
 // End
 
 
