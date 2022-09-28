@@ -55,43 +55,15 @@ class Motor
     int yaw_turn(int pwm, int turn, int speedVal)
     {
         //Accepts a pwm signal and outputs a pwm signal from 0-255
-        if(turn == 0)
-        {
-            #if debug
-            Serial.print("Normal PWM: ");
-            Serial.println(pwm);
-            Serial.flush();
-            #endif
-            return (pwm);
-        }
-  
-        if( (encPos > 44.0) && (encPos < 226.0))
-        {
-            float x = (1 + turn*diff)*pwm;
-            if (x > 255) x = 255;
-            if (x < 30 and speedVal != 0) x = 30;
-            if (speedVal == 0) x = 0;
-    
-            #if debug
-            Serial.print(" First half PWM: ");
-            Serial.println(x);
-            #endif
-            return round(x);
-        }
-  
-        if ( ( encPos > 225.0 && encPos < 361.0) || (encPos >= 0.0 && encPos < 45.0))
-        {
-            float x = (1 - turn*diff)*pwm; 
-            if (x > 255) x = 255;
-            if (x < 30 and speedVal != 0) x = 30;
-            if (speedVal == 0) x = 0;
-    
-            #if debug
-            Serial.print("Second Half PWM: ");
-            Serial.println(x);
-            #endif
-            return round(x);
-        }
+        if (turn == 0) return pwm;
+        if( (encPos > 44.0) && (encPos < 226.0)) turn = -turn;
+
+        float x = (1 - turn*diff)*pwm; 
+        if (x > 255) x = 255;
+        if (x < 30 and speedVal != 0) x = 30;
+        if (speedVal == 0) x = 0;
+
+        return round(x);
     }
 
     float encoderPosition()
