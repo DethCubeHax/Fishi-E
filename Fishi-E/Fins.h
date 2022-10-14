@@ -36,8 +36,8 @@ class Fins
 //        #endif
 
         //For servo used, the range of writeMicroseconds are different
-        s1 = (((43-rollVal)*maxAttackAngle/80 +(42-pitchVal)*maxAttackAngle/80) + 90.0) + servoOneCalibration;
-        s2 = (((43-rollVal)*maxAttackAngle/80 -(42-pitchVal)*maxAttackAngle/80) + 90.0) + servoTwoCalibration;
+        s1 = (((rollVal)*maxAttackAngle/80 +(pitchVal)*maxAttackAngle/80) + 90.0) + servoOneCalibration;
+        s2 = (((rollVal)*maxAttackAngle/80 -(pitchVal)*maxAttackAngle/80) + 90.0) + servoTwoCalibration;
         s1 = constrain(s1, 25, 155);
         s2 = constrain(s2, 25, 155);
         // The range of DS3120: 500 - 2500 (red 20kg servo)
