@@ -66,11 +66,9 @@ class Communications
 
     void standardizeData()
     {
-        pitchVal = constrain(pitchVal, 10, 90);
+        pitchVal = 50 - constrain(pitchVal, 10, 90);
         speedVal = constrain(speedVal, 0, 9);
-        yawVal = constrain(yawVal, 1, 9);
-        rollVal = constrain(rollVal, 10, 90);
-        
-        yawVal -= 5;
+        yawVal = constrain(yawVal, 1, 9) - 5;
+        rollVal = 50 - constrain(rollVal, 10, 90);
     }
 };
