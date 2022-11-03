@@ -21,6 +21,7 @@ class Communications
 
             if (x == 'h')
             {
+                Serial.println(x);
                 setHome = true;
             }
 
@@ -35,13 +36,7 @@ class Communications
                 {
                     speedVal = incomingByte[0] - '0';
                     pitchVal = incomingByte[1];
-                    int t = incomingByte[2] - '0';
-                    if (t != yawVal)
-                    {
-                        yawVal = t;
-                        yawOnFastStroke = true;
-                    }
-                    
+                    yawVal = incomingByte[2] - '0';
                     rollVal = incomingByte[3];
                     
                     killTimer = millis();

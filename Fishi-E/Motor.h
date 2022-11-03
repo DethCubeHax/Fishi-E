@@ -29,23 +29,24 @@ class Motor
     {
         encPos = encoderPosition();
         int throttle = 0;
-        
-        if (yawOnFastStroke == true)
-        {
-          if ((yawVal > 0) && (encPos > 44.0) && (encPos < 226.0))
-          {
-            yawOnFastStroke = false;
-          }
-          if ((yawVal < 0) && (( encPos > 225.0 && encPos < 361.0) || (encPos >= 0.0 && encPos < 45.0)))
-          {
-            yawOnFastStroke = false;
-          }
-          throttle = yaw_turn(motorPWM, 0, speedVal);
-        }
-        else
-        {
+        motorPWM = (speedVal*255)/9;
+//        
+//        if (yawOnFastStroke == true)
+//        {
+//          if ((yawVal > 0) && (encPos > 44.0) && (encPos < 226.0))
+//          {
+//            yawOnFastStroke = false;
+//          }
+//          if ((yawVal < 0) && (( encPos > 225.0 && encPos < 361.0) || (encPos >= 0.0 && encPos < 45.0)))
+//          {
+//            yawOnFastStroke = false;
+//          }
+//          throttle = yaw_turn(motorPWM, 0, speedVal);
+//        }
+//        else
+//        {
           throttle = yaw_turn(motorPWM, yawVal, speedVal);
-        }
+//        }
         throttle = map(throttle, 0, 255, THROTTLE_MIN, THROTTLE_MAX);
         pusherESC.writeMicroseconds(throttle);
     }
@@ -55,15 +56,43 @@ class Motor
     int yaw_turn(int pwm, int turn, int speedVal)
     {
         //Accepts a pwm signal and outputs a pwm signal from 0-255
-        if (turn == 0) return pwm;
-        if( (encPos > 44.0) && (encPos < 226.0)) turn = -turn;
-
-        float x = (1 - turn*diff)*pwm; 
-        if (x > 255) x = 255;
-        if (x < 30 and speedVal != 0) x = 30;
-        if (speedVal == 0) x = 0;
-
-        return round(x);
+        if(turn == 0)
+        {
+            #if debug
+            Serial.print("Normal PWM: ");
+            Serial.println(pwm);
+            Serial.flush();
+            #endif
+            return (pwm);
+        }
+  
+        if( (encPos > 44.0) && (encPos < 226.0))
+        {
+            float x = (1 + turn*diff)*pwm;
+            if (x > 255) x = 255;
+            if (x < 30 and speedVal != 0) x = 30;
+            if (speedVal == 0) x = 0;
+    
+            #if debug
+            Serial.print(" First half PWM: ");
+            Serial.println(x);
+            #endif
+            return round(x);
+        }
+  
+        if ( ( encPos > 225.0 && encPos < 361.0) || (encPos >= 0.0 && encPos < 45.0))
+        {
+            float x = (1 - turn*diff)*pwm; 
+            if (x > 255) x = 255;
+            if (x < 30 and speedVal != 0) x = 30;
+            if (speedVal == 0) x = 0;
+    
+            #if debug
+            Serial.print("Second Half PWM: ");
+            Serial.println(x);
+            #endif
+            return round(x);
+        }
     }
 
     float encoderPosition()
@@ -72,12 +101,12 @@ class Motor
         {
             qdec.encReset();
             setHome = false;
+            Serial.print(setHome);
         }
 
         // takes the current count and updates it to an angle from 0 degrees - 360 degress
         long qdecCount = qdec.encRead();
         long x = qdecCount - floor(static_cast<float>(qdecCount) / static_cast<float>(countsPerRevolution)) * countsPerRevolution;   // new_fin%count_per_revolution 
-        Serial.println(qdecCount);
         if (x == 0)
         {
             return qdecCount*1.0/countsPerRevolution*360;
